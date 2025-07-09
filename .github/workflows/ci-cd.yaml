@@ -1,10 +1,10 @@
 name: memo-app With Github Actions
 
 on:
-  workflow_dispatch:
-    push:
-      branches:
-        - backend
+  # workflow_dispatch:
+  push:
+    branches:
+     - backend
 
 jobs:
   ci:
