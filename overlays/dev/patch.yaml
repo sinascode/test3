@@ -1,1 +1,22 @@
-
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memo-app
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: memo-app
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "dev,kubernetes"
+        - name: LOGGING_LEVEL_ROOT
+          value: "DEBUG"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
