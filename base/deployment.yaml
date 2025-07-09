@@ -1,1 +1,105 @@
-
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memo-app
+  labels:
+    app: memo-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: memo-app
+  template:
+    metadata:
+      labels:
+        app: memo-app
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/actuator/prometheus"
+    spec:
+      containers:
+      - name: memo-app
+        image: team4-memo-app
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "kubernetes"
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: redis.host
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: redis.port
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: redis.password
+        - name: AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: aws.region
+        - name: S3_BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: s3.bucket.name
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: aws.access.key.id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: aws.secret.access.key
+        - name: RDS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: rds-secret
+              key: endpoint
+        - name: RDS_PORT
+          valueFrom:
+            secretKeyRef:
+              name: rds-secret
+              key: port
+        - name: RDS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: rds-secret
+              key: username
+        - name: RDS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rds-secret
+              key: password
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 3
