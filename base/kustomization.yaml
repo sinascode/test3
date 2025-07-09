@@ -12,5 +12,5 @@ resources:
 
 images:
   - name: team4-memo-app
-    newName: docker.io/YOUR_DOCKERHUB_USERNAME/team4-memo-app
+    newName: docker.io/sinasdocker/test
     newTag: latest
