@@ -99,14 +99,9 @@ jobs:
       - name: Set up Image for Kustomize
         run: |
           cd overlays/${{ env.ENVIRONMENT }}
-          sed -i "s|newTag:.*|newTag: ${{ env.SHORT_SHA }}|g" kustomization.yaml
+          sed -i "s|newTag:.*|newTag: ${{ env.SHORT_SHA }}|g" ./manifest/overlays/dev/kustomization.yaml
           
-      - name: Set up Image for direct manifest (if exists)
-        run: |
-          if [ -f "./manifest/memo-app.yaml" ]; then
-            sed -i "s%image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:[a-f0-9]\+%image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:${{ env.SHORT_SHA }}%" ./manifest/memo-app.yaml
-          fi
-          
+    
       - name: Commit and push changes
         run: |
           git config --local user.email "${{ secrets.EMAIL }}"
