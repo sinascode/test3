@@ -88,11 +88,11 @@ jobs:
         
       - name: Set environment variables
         run: |
-          if [ "${{ github.ref }}" == "refs/heads/backend" ]; then
-            echo "ENVIRONMENT=prod" >> $GITHUB_ENV
-          else
-            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
-          fi
+          # if [ "${{ github.ref }}" == "refs/heads/backend" ]; then
+          #   echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+          # else
+          echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+          # fi
           
       - name: Set up Image for Kustomize
         run: |
